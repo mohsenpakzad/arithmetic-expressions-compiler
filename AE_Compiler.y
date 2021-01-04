@@ -23,7 +23,11 @@ term:
 factor: 
     NUMBER | LEFT_PARENTHESES expr RIGHT_PARENTHESES
 ;
-%% 
+%%
+
+int yyerror(char *s) {
+  printf("%s\n", s);
+}
 
 int main() {
     if (yyparse())
