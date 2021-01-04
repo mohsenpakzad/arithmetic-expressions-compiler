@@ -1,4 +1,7 @@
+*.yy.c
+
+*.tab.h
+*.tab.c
+
 *.exe
 *.out
-
-*.yy.c
