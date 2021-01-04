@@ -1,12 +1,5 @@
 %{ 
-#define NUMBER 256
-#define PLUS 257
-#define MINUS 258
-#define DIVIDE 259
-#define MULTIPLY 260
-#define NEW_LINE 261
-#define LEFT_PARENTHESES 262
-#define RIGHT_PARENTHESES 263
+#include"hello.tab.c"
 
 int num;
 %} 
