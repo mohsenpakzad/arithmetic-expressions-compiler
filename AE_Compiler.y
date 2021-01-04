@@ -15,15 +15,33 @@ stmt:
     expr NEW_LINE
 ;
 expr:
-    expr PLUS term | expr MINUS term | term
+    expr PLUS term {
+        printf("Assign %s Plu %s to t%d\n", $1, $3, getCurrentVariableIndex());
+    } 
+    | expr MINUS term {
+        printf("Assign %s Min %s to t%d\n", $1, $3, getCurrentVariableIndex());
+    }
+    | term 
 ;
 term:
-    term MULTIPLY factor | term DIVIDE factor | factor
+    term MULTIPLY factor {
+        printf("Assign %s Mul %s to t%d\n", $1, $3, getCurrentVariableIndex());
+    }
+    | term DIVIDE factor {
+        printf("Assign %s Div %s to t%d\n", $1, $3, getCurrentVariableIndex());
+    }
+    | factor
 ;
 factor: 
-    NUMBER | LEFT_PARENTHESES expr RIGHT_PARENTHESES
+    NUMBER 
+    | LEFT_PARENTHESES expr RIGHT_PARENTHESES
 ;
 %%
+int currentVariableIndex = 0;
+
+int getCurrentVariableIndex(){
+    return currentVariableIndex++;
+}
 
 int yyerror(char *s) {
   printf("%s\n", s);
