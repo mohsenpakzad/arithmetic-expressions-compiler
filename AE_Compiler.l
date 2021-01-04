@@ -8,7 +8,7 @@
 digit [0-9]
 number {digit}+
 %%
-{number}  { yylval = atoi(yytext); return NUMBER; }
+{number}  { yylval = newPhrase(yytext); return NUMBER; }
 "+"       { return PLUS; }
 "-"       { return MINUS; }
 "*"       { return MULTIPLY; }
