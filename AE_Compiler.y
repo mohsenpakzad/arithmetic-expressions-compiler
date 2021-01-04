@@ -1,4 +1,6 @@
-
+%{ 
+    #include"headers.h"
+%}
 %token NUMBER
 %token PLUS MINUS MULTIPLY DIVIDE
 %token LEFT_PARENTHESES RIGHT_PARENTHESES
