@@ -4,8 +4,8 @@
     int yylex();
     void yyerror(const char *);
     extern int currentVariableIndex;// unnecessary
-    struct Phrase extractVariableAndIncreaseIndex();
-    int digitName(char *, char *);
+    struct Phrase nextVar();
+    void digitName(char *, char);
 %}
 %token OND_DIGIT_NUMBER TWO_DIGIT_NUMBER THREE_DIGIT_NUMBER FOUR_DIGIT_NUMBER FIVE_DIGIT_NUMBER SIX_DIGIT_NUMBER
 %token PLUS MINUS MULTIPLY DIVIDE
@@ -22,7 +22,7 @@ stmts:
 ;
 stmt:
     expr NEW_LINE {
-        printf("print %s\n", $1);
+        printf("print %s\n", $1.value);
         puts("------------------------------------------");
         // currentVariableIndex = 0; // reset index or not?
     }
@@ -35,11 +35,11 @@ stmt:
 expr:
     expr PLUS term {
         printf("Assign %s Plu %s to t%d\n", $1.value, $3.value, currentVariableIndex);
-        $$ = extractVariableAndIncreaseIndex();
+        $$ = nextVar();
     } 
     | expr MINUS term {
         printf("Assign %s Min %s to t%d\n", $1.value, $3.value, currentVariableIndex);
-        $$ = extractVariableAndIncreaseIndex(); 
+        $$ = nextVar(); 
     }
     | term {
         $$ = $1;
@@ -48,21 +48,88 @@ expr:
 term:
     term MULTIPLY factor {
         printf("Assign %s Mul %s to t%d\n", $1.value, $3.value, currentVariableIndex);
-        $$ = extractVariableAndIncreaseIndex(); 
+        $$ = nextVar(); 
     }
     | term DIVIDE factor {
         printf("Assign %s Div %s to t%d\n", $1.value, $3.value, currentVariableIndex);
-        $$ = extractVariableAndIncreaseIndex();
+        $$ = nextVar();
     }
     | factor {
         $$ = $1;
     }
 ;
- /* OND_DIGIT_NUMBER TWO_DIGIT_NUMBER THREE_DIGIT_NUMBER FOUR_DIGIT_NUMBER FIVE_DIGIT_NUMBER SIX_DIGIT_NUMBER */
+
 factor: 
     OND_DIGIT_NUMBER {
         char newNumber[MAX_PHARASE_VALUE_SIZE];
-        sprintf(newNumber, "%s", $1.value);
+        char temp[MAX_NUM_SIZE];
+        digitName(temp, $1.value[0]);
+        sprintf(newNumber, "%s", temp);
+        $$ = newPhrase(newNumber);
+    } 
+    | TWO_DIGIT_NUMBER {
+        char newNumber[MAX_PHARASE_VALUE_SIZE];
+        char temp1[MAX_NUM_SIZE];
+        digitName(temp1, $1.value[0]);
+        char temp2[MAX_NUM_SIZE];
+        digitName(temp2, $1.value[1]);
+        sprintf(newNumber, "%sTen_%s", temp1, temp2);
+        $$ = newPhrase(newNumber);
+    } 
+    | THREE_DIGIT_NUMBER {
+        char newNumber[MAX_PHARASE_VALUE_SIZE];
+        char temp1[MAX_NUM_SIZE];
+        digitName(temp1, $1.value[0]);
+        char temp2[MAX_NUM_SIZE];
+        digitName(temp2, $1.value[1]);
+        char temp3[MAX_NUM_SIZE];
+        digitName(temp3, $1.value[2]);
+        sprintf(newNumber, "%sHun_%sTen_%s", temp1, temp2, temp3);
+        $$ = newPhrase(newNumber);
+    } 
+    | FOUR_DIGIT_NUMBER {
+        char newNumber[MAX_PHARASE_VALUE_SIZE];
+        char temp1[MAX_NUM_SIZE];
+        digitName(temp1, $1.value[0]);
+        char temp2[MAX_NUM_SIZE];
+        digitName(temp2, $1.value[1]);
+        char temp3[MAX_NUM_SIZE];
+        digitName(temp3, $1.value[2]);
+        char temp4[MAX_NUM_SIZE];
+        digitName(temp4, $1.value[3]);
+        sprintf(newNumber, "(%s)Tou_%sHun_%sTen_%s", temp1, temp2, temp3, temp4);
+        $$ = newPhrase(newNumber);
+    } 
+    | FIVE_DIGIT_NUMBER {
+        char newNumber[MAX_PHARASE_VALUE_SIZE];
+        char temp1[MAX_NUM_SIZE];
+        digitName(temp1, $1.value[0]);
+        char temp2[MAX_NUM_SIZE];
+        digitName(temp2, $1.value[1]);
+        char temp3[MAX_NUM_SIZE];
+        digitName(temp3, $1.value[2]);
+        char temp4[MAX_NUM_SIZE];
+        digitName(temp4, $1.value[3]);
+        char temp5[MAX_NUM_SIZE];
+        digitName(temp5, $1.value[4]);
+        sprintf(newNumber, "(%sTen_%s)Tou_%sHun_%sTen_%s", temp1, temp2, temp3, temp4, temp5);
+        $$ = newPhrase(newNumber);
+    } 
+    | SIX_DIGIT_NUMBER {
+        char newNumber[MAX_PHARASE_VALUE_SIZE];
+        char temp1[MAX_NUM_SIZE];
+        digitName(temp1, $1.value[0]);
+        char temp2[MAX_NUM_SIZE];
+        digitName(temp2, $1.value[1]);
+        char temp3[MAX_NUM_SIZE];
+        digitName(temp3, $1.value[2]);
+        char temp4[MAX_NUM_SIZE];
+        digitName(temp4, $1.value[3]);
+        char temp5[MAX_NUM_SIZE];
+        digitName(temp5, $1.value[4]);
+        char temp6[MAX_NUM_SIZE];
+        digitName(temp6, $1.value[5]);
+        sprintf(newNumber, "(%sHun_%sTen_%s)Tou_%sHun_%sTen_%s", temp1, temp2, temp3, temp4, temp5, temp6);
         $$ = newPhrase(newNumber);
     } 
     | LEFT_PARENTHESES expr RIGHT_PARENTHESES {
@@ -72,45 +139,45 @@ factor:
 %%
 int currentVariableIndex = 0;
 
-struct Phrase extractVariableAndIncreaseIndex() {
+struct Phrase nextVar() {
     char newVar[MAX_PHARASE_VALUE_SIZE];
     sprintf(newVar, "t%d", currentVariableIndex++);
     return newPhrase(newVar); 
 }
 
-int digitName(char *str, char *digit){
-	switch(digit[0])
+void digitName(char *str, char digit){
+	switch(digit)
 	{
 		case '0':
 			strcpy(str, "Zero");
-			return 0;
+            break;
 		case '1':
 			strcpy(str, "One");
-			return 1;
+			break;
 		case '2':
 			strcpy(str, "Two");
-			return 2;
+			break;
 		case '3':
 			strcpy(str, "Three");
-			return 3;
+			break;
 		case '4':
 			strcpy(str, "Four");
-			return 4;
+			break;
 		case '5':
 			strcpy(str, "Five");
-			return 5;	
+			break;	
 		case '6':
 			strcpy(str, "Six");
-			return 6;
+			break;
 		case '7':
 			strcpy(str, "Sevev");
-			return 0;
+			break;
 		case '8':
 			strcpy(str, "Eight");
-			return 8;
+			break;
 		case '9':
 			strcpy(str, "Nine");
-			return 9;
+			break;
 	}
 }
 

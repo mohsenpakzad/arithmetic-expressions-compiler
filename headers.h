@@ -4,3 +4,4 @@
 
 #include"phrase.h"
 #define YYSTYPE struct Phrase
+#define MAX_NUM_SIZE 10
