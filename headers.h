@@ -2,5 +2,4 @@
 #include<string.h>
 #include<stdlib.h>
 
-#include"phrase.h"
-#define YYSTYPE struct Phrase
+#define MAX_PHARASE_SIZE 1000
