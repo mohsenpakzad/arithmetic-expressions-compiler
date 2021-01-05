@@ -5,6 +5,7 @@
     void yyerror(const char *);
     extern int currentVariableIndex;// unnecessary
     struct Phrase extractVariableAndIncreaseIndex();
+    int digitName(char *, char *);
 %}
 %token OND_DIGIT_NUMBER TWO_DIGIT_NUMBER THREE_DIGIT_NUMBER FOUR_DIGIT_NUMBER FIVE_DIGIT_NUMBER SIX_DIGIT_NUMBER
 %token PLUS MINUS MULTIPLY DIVIDE
@@ -21,23 +22,23 @@ stmts:
 ;
 stmt:
     expr NEW_LINE {
-        printf("print %s\n", $1.value);
+        printf("print %s\n", $1);
         puts("------------------------------------------");
         // currentVariableIndex = 0; // reset index or not?
     }
-    | character_number NEW_LINE {
+    /* | character_number NEW_LINE {
         printf("Assign %s to t%d;\n", $1.value, currentVariableIndex);
         printf("print t%d\n",currentVariableIndex);
         puts("------------------------------------------");
-    }
+    } */
 ;
 expr:
     expr PLUS term {
-        printf("Assign %s Plu %s to t%d\n", $1, $3, currentVariableIndex);
+        printf("Assign %s Plu %s to t%d\n", $1.value, $3.value, currentVariableIndex);
         $$ = extractVariableAndIncreaseIndex();
     } 
     | expr MINUS term {
-        printf("Assign %s Min %s to t%d\n", $1, $3, currentVariableIndex);
+        printf("Assign %s Min %s to t%d\n", $1.value, $3.value, currentVariableIndex);
         $$ = extractVariableAndIncreaseIndex(); 
     }
     | term {
@@ -46,11 +47,11 @@ expr:
 ;
 term:
     term MULTIPLY factor {
-        printf("Assign %s Mul %s to t%d\n", $1, $3, currentVariableIndex);
+        printf("Assign %s Mul %s to t%d\n", $1.value, $3.value, currentVariableIndex);
         $$ = extractVariableAndIncreaseIndex(); 
     }
     | term DIVIDE factor {
-        printf("Assign %s Div %s to t%d\n", $1, $3, currentVariableIndex);
+        printf("Assign %s Div %s to t%d\n", $1.value, $3.value, currentVariableIndex);
         $$ = extractVariableAndIncreaseIndex();
     }
     | factor {
@@ -61,8 +62,8 @@ term:
 factor: 
     OND_DIGIT_NUMBER {
         char newNumber[MAX_PHARASE_VALUE_SIZE];
-        sprintf(newNumber, "%s", $1);
-        $$ = newNumber;
+        sprintf(newNumber, "%s", $1.value);
+        $$ = newPhrase(newNumber);
     } 
     | LEFT_PARENTHESES expr RIGHT_PARENTHESES {
         $$ = $2;
@@ -74,7 +75,7 @@ int currentVariableIndex = 0;
 struct Phrase extractVariableAndIncreaseIndex() {
     char newVar[MAX_PHARASE_VALUE_SIZE];
     sprintf(newVar, "t%d", currentVariableIndex++);
-    return newVar; 
+    return newPhrase(newVar); 
 }
 
 int digitName(char *str, char *digit){

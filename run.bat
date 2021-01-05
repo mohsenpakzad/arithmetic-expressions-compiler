@@ -1,7 +1,7 @@
 del AE_Compiler.exe
 flex  AE_Compiler.l
 bison -d AE_Compiler.y
-gcc  -o AE_Compiler lex.yy.c AE_Compiler.tab.c
+gcc  -o AE_Compiler lex.yy.c AE_Compiler.tab.c phrase.c
 del lex.yy.c
 del AE_Compiler.tab.h
 del AE_Compiler.tab.c
