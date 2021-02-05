@@ -18,4 +18,4 @@ Two |  2  |   | Nin |    9   |   | Mul |  *
 Thr |  3  |   | Ten |   10   |   | Div |  / 
 Fou |  4  |   | Hun |  100   |   |     |   
 Fiv |  5  |   | Tou | 1000   |   |     |   
-Six |  6  |   |     |        |   |     |     
+Six |  6  |   |     |        |   |     |    
